@@ -11,6 +11,12 @@ if (!exists("settings_rpivottable_params_method"))
     settings_rpivottable_params_method = "Table";
 }
 
+if (!exists("settings_rpivottable_params_fontsize"))
+{
+    settings_rpivottable_params_fontsize = "12px";
+}
+
+
 initial_row <- colnames(Values)[1];
 initial_column <- colnames(Values)[2];
 

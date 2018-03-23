@@ -33,6 +33,7 @@ module powerbi.extensibility.visual {
 	
 	interface VisualSettingsRPivotTableParams {
         method: string;
+		fontSize: string;
     }
 
     // to allow this scenario you should first the following JSON definition to the capabilities.json file
@@ -74,6 +75,7 @@ module powerbi.extensibility.visual {
 			
 			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
                 method: "Table",
+				fontSize: "12px"
             };
         }
 
@@ -92,6 +94,7 @@ module powerbi.extensibility.visual {
 			
 			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
                 method: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
+				fontSize: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
             };
 
             let payloadBase64: string = null;
@@ -144,6 +147,18 @@ module powerbi.extensibility.visual {
                     this.headNodes = ParseElement(head, document.head);
                 }
             }
+			
+			// User-selected Format option styles
+			var css = document.createElement("style");
+			css.type = "text/css";
+			css.innerHTML = ".pvtVal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+							".pvtAttr { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+							".pvtTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+							".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+							".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+							".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+							".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " ;
+			document.body.appendChild(css);
 
             // update 'body' nodes, under the rootElement
             while (this.bodyNodes.length > 0) {
@@ -155,7 +170,7 @@ module powerbi.extensibility.visual {
                 let body: HTMLBodyElement = bodyList[0];
                 this.bodyNodes = ParseElement(body, this.rootElement);
             }
-
+			
             RunHTMLWidgetRenderer();
         }
 
@@ -180,7 +195,8 @@ module powerbi.extensibility.visual {
                         objectEnumeration.push({
                             objectName: objectName,
                             properties: {
-                                method: this.settings_rpivottable_params.method
+                                method: this.settings_rpivottable_params.method,
+								fontSize: this.settings_rpivottable_params.fontSize
                             },
                             selector: null
                         });

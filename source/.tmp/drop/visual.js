@@ -843,6 +843,7 @@ var powerbi;
                         this.bodyNodes = [];
                         this.settings_rpivottable_params = {
                             method: "Table",
+                            fontSize: "12px"
                         };
                     }
                     Visual.prototype.update = function (options) {
@@ -858,6 +859,7 @@ var powerbi;
                         this.settings = Visual.parseSettings(dataView);
                         this.settings_rpivottable_params = {
                             method: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
+                            fontSize: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
                         };
                         var payloadBase64 = null;
                         if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
@@ -904,6 +906,17 @@ var powerbi;
                                 this.headNodes = rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.ParseElement(head, document.head);
                             }
                         }
+                        // User-selected Format option styles
+                        var css = document.createElement("style");
+                        css.type = "text/css";
+                        css.innerHTML = ".pvtVal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                            ".pvtAttr { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                            ".pvtTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                            ".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                            ".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+                            ".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+                            ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} ";
+                        document.body.appendChild(css);
                         // update 'body' nodes, under the rootElement
                         while (this.bodyNodes.length > 0) {
                             var tempNode = this.bodyNodes.pop();
@@ -934,7 +947,8 @@ var powerbi;
                                 objectEnumeration.push({
                                     objectName: objectName,
                                     properties: {
-                                        method: this.settings_rpivottable_params.method
+                                        method: this.settings_rpivottable_params.method,
+                                        fontSize: this.settings_rpivottable_params.fontSize
                                     },
                                     selector: null
                                 });
@@ -958,7 +972,7 @@ var powerbi;
                 name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
                 displayName: 'R Pivot Table',
                 class: 'Visual',
-                version: '1.0.1.5',
+                version: '1.0.1.6',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true
