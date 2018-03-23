@@ -4,7 +4,7 @@
     "displayName": "R PivotTable",
     "guid": "rPivotTable8B3D024D64314B469FFC4852A7ACBD5F",
     "visualClassName": "Visual",
-    "version": "1.0.1.1",
+    "version": "1.0.1.2",
     "description": "R PivotTable from BlueGranite brings dynamic, interactive pivots to Power BI",
     "supportUrl": "",
     "gitHubUrl": ""
