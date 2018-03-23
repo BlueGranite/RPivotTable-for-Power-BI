@@ -56,7 +56,33 @@
           }
         }
       }
-    }
-  },
+    },
+    "settings_rpivottable_params": {
+      "displayName": "Visual Settings",
+      "description": "Settings to control the look and feel of R Pivot Table by BlueGranite",
+      "properties": {
+        "method": {
+          "displayName": "Default display",
+          "description": "Control the default pivot display",
+          "type": {
+            "enumeration": [
+              {
+                "displayName": "Table",
+                "value": "Table"
+              },
+              {
+                "displayName": "Table Barchart",
+                "value": "Table Barchart"
+              },
+              {
+                "displayName": "Heatmap",
+                "value": "Heatmap"
+              }
+            ]
+          }
+        }
+	  }
+	}
+},
   "suppressDefaultTitle": true
 }

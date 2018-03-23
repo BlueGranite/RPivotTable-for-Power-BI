@@ -30,6 +30,10 @@ module powerbi.extensibility.visual {
     /*interface VisualSettings {
         lineColor: string;
     }*/
+	
+	interface VisualSettingsRPivotTableParams {
+        method: string;
+    }
 
     // to allow this scenario you should first the following JSON definition to the capabilities.json file
     // under the "objects" property:
@@ -58,6 +62,8 @@ module powerbi.extensibility.visual {
         private headNodes: Node[];
         private bodyNodes: Node[];
         private settings: VisualSettings;
+		private settings_rpivottable_params: VisualSettingsRPivotTableParams;
+
 
         public constructor(options: VisualConstructorOptions) {
             if (options && options.element) {
@@ -65,6 +71,10 @@ module powerbi.extensibility.visual {
             }
             this.headNodes = [];
             this.bodyNodes = [];
+			
+			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
+                method: "Table",
+            };
         }
 
         public update(options: VisualUpdateOptions): void {
@@ -79,14 +89,16 @@ module powerbi.extensibility.visual {
             }
             const dataView: DataView = options.dataViews[0];
             this.settings = Visual.parseSettings(dataView);
+			
+			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
+                method: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
+            };
 
             let payloadBase64: string = null;
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                 payloadBase64 = dataView.scriptResult.payloadBase64;
             }
 			
-			console.log(dataView.scriptResult.payloadBase64);
-
             if (renderVisualUpdateType.indexOf(options.type) === -1) {
                 if (payloadBase64) {
                     this.injectCodeFromPayload(payloadBase64);
@@ -156,9 +168,25 @@ module powerbi.extensibility.visual {
          * objects and properties you want to expose to the users in the property pane.
          * 
          */
-        public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions):
-            VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
-            return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
+        public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
+            // VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
+            // return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
+			
+			let objectName = options.objectName;
+                let objectEnumeration = [];
+
+                switch (objectName) {
+                    case 'settings_rpivottable_params':
+                        objectEnumeration.push({
+                            objectName: objectName,
+                            properties: {
+                                method: this.settings_rpivottable_params.method
+                            },
+                            selector: null
+                        });
+                }
+
+            return objectEnumeration;
         }
     }
 }
