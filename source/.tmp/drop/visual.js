@@ -719,6 +719,7 @@ var powerbi;
                         if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                             payloadBase64 = dataView.scriptResult.payloadBase64;
                         }
+                        console.log(dataView.scriptResult.payloadBase64);
                         if (renderVisualUpdateType.indexOf(options.type) === -1) {
                             if (payloadBase64) {
                                 this.injectCodeFromPayload(payloadBase64);
@@ -800,7 +801,7 @@ var powerbi;
                 name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
                 displayName: 'R PivotTable',
                 class: 'Visual',
-                version: '1.0.1',
+                version: '1.0.1.1',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true

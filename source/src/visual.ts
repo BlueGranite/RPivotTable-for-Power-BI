@@ -84,6 +84,8 @@ module powerbi.extensibility.visual {
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                 payloadBase64 = dataView.scriptResult.payloadBase64;
             }
+			
+			console.log(dataView.scriptResult.payloadBase64);
 
             if (renderVisualUpdateType.indexOf(options.type) === -1) {
                 if (payloadBase64) {

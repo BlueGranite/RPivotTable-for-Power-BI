@@ -84,6 +84,8 @@ module powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F 
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                 payloadBase64 = dataView.scriptResult.payloadBase64;
             }
+			
+			console.log(dataView.scriptResult.payloadBase64);
 
             if (renderVisualUpdateType.indexOf(options.type) === -1) {
                 if (payloadBase64) {
