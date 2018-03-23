@@ -797,11 +797,11 @@ var powerbi;
     (function (visuals) {
         var plugins;
         (function (plugins) {
-            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F = {
-                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
+            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG = {
+                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG',
                 displayName: 'R PivotTable',
                 class: 'Visual',
-                version: '1.0.1.2',
+                version: '1.0.1.3',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true
