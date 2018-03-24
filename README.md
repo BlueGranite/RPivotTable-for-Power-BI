@@ -1,6 +1,8 @@
 # R Pivot Table for Power BI
 An interactive R HTML *Pivot Table* for Microsoft Power BI from [BlueGranite](https://www.blue-granite.com).
 
+![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/RPivotTableSample.gif)  
+
 ### PREVIEW
 R Pivot Table is in early preview. It is in the process of being submitted to Microsoft AppSource. For limited use and testing, you can download **RPivotTable-1.0.1.6pbiviz** for non-production environments from the [*packaged-versions*](https://github.com/BlueGranite/RPivotTable-for-Power-BI/tree/master/packaged-versions) folder in this repository. There is no support currently offered for this visual while in preview, but please log any problems in the Issues section of this repository. 
 
@@ -28,7 +30,6 @@ There are several limitations to this pivot table that make it a good *explorato
 
 
 R Pivot Table requires both the htmlwidgets and rpivotTable R packages installed if you use the visual in Power BI Desktop. These packages are already available in Power BI Service.
-
-![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/RPivotTableSample.gif)  
+ 
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.PNG)  
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.gif)
