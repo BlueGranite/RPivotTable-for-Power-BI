@@ -15,8 +15,8 @@ R Pivot Table for Power BI is an interactive R HTML visual that relies on R's *r
 
 ### Format options
 
-Default display - select the default view when a user opens the report: Table (default), Heatmap, or Table Barchart  
-Font Size - set the font size ranging from 10 to 20 (default 12)  
+**Default display** - select the default view when a user opens the report: Table (default), Heatmap, or Table Barchart  
+**Font Size** - set the font size ranging from 10 to 20 (default 12)  
 
 ### Limitations
 There are several limitations to this pivot table that make it a good *exploratory* visual but not a good *explanatory* visual:
@@ -29,6 +29,6 @@ There are several limitations to this pivot table that make it a good *explorato
 
 R Pivot Table requires both the htmlwidgets and rpivotTable R packages installed if you use the visual in Power BI Desktop. These packages are already available in Power BI Service.
 
-![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/R Pivot Table Sample.gif)  
+![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/RPivotTableSample.gif)  
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.PNG)  
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.gif)
