@@ -1,11 +1,34 @@
-# R PivotTable for Power BI
-Interactive R HTML Pivot Table for Microsoft Power BI from David Eldersveld.
+# R Pivot Table for Power BI
+Interactive R HTML Pivot Table for Microsoft Power BI from BlueGranite.
 
 ### PREVIEW
-R PivotTable is in early *preview*. You can download **RPivotTable-1.0.1.pbiviz** for testing in non-production environments from the [*packaged-versions*](https://github.com/BlueGranite/RPivotTable-for-Power-BI/tree/master/packaged-versions) folder in this repository. There is no support currently offered for this visual while in preview, but please log any problems in the Issues section of this repository. 
+R Pivot Table is in early *preview*. You can download **RPivotTable-1.0.1.6pbiviz** for testing in non-production environments from the [*packaged-versions*](https://github.com/BlueGranite/RPivotTable-for-Power-BI/tree/master/packaged-versions) folder in this repository. There is no support currently offered for this visual while in preview, but please log any problems in the Issues section of this repository. 
 
-### Use
-R PivotTable for Power BI is an interactive R HTML visual that relies on R's *rpivotTable* package. This package is currently not available in the Power BI Service at www.powerbi.com. I have made a request to have Microsoft install the package per the instructions in their [documentation](https://docs.microsoft.com/en-us/power-bi/service-r-packages-support). In the meantime, this custom visual is limited to use in Power BI Desktop connecting to a local R environment with both the *htmlwidgets* and *rpivotTable* packages installed.
+### Using R Pivot Table by BlueGranite  
+R Pivot Table for Power BI is an interactive R HTML visual that relies on R's *rpivotTable* package. This visual is available for use in both Power BI Desktop and Service. As an R visual, it will not render in Power BI Report Server or the Mobile app. If using this visual in Power BI Desktop, be sure to install both the *htmlwidgets* and *rpivotTable* packages in your local R environment.
 
+1) Add an instance of the R Pivot Table visual to the report canvas.  
+2) Add data to *Values*. The first value in the list will default to Rows. The second (if available) will default to columns. Additional fields will be available for use as desired.  
+3) Click and drag available fields to the dark "Row" and "Column" panes to dynamically build a pivot table.  
+4) Select options to change the appearance of the pivot table.  
+
+
+### Format options
+
+Default display - select the default view when a user opens the report: Table (default), Heatmap, or Table Barchart  
+Font Size - set the font size ranging from 10 to 20 (default 12)  
+
+### Limitations
+There are several limitations to this pivot table that make it a good *exploratory* visual but not a good *explanatory* visual:
+1) Although R HTML visuals are interactive, you cannot select and filter other visuals by clicking inside the R visual.
+2) Pivot table will not save a user-selected state. You will always start with the defaults.
+3) There is no "freeze header" capability like you have in Excel.
+4) The Custom Visuals API does not currently expose format string for R visuals. The number of decimal places and formatting may not be what you expect based on other, non-R, visuals.
+5) Printing or exporting the filtered view is not available from the pivot table.
+
+
+R Pivot Table requires both the htmlwidgets and rpivotTable R packages installed if you use the visual in Power BI Desktop. These packages are already available in Power BI Service.
+
+![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/R Pivot Table Sample.gif)  
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.PNG)  
 ![](https://github.com/BlueGranite/RPivotTable-for-Power-BI/raw/master/images/rpivotTable.gif)
