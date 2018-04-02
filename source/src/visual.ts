@@ -23,6 +23,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
+
 module powerbi.extensibility.visual {
     "use strict";
     // below is a snippet of a definition for an object which will contain the property values
@@ -30,10 +31,10 @@ module powerbi.extensibility.visual {
     /*interface VisualSettings {
         lineColor: string;
     }*/
-	
-	interface VisualSettingsRPivotTableParams {
+
+    interface VisualSettingsRPivotTableParams {
         method: string;
-		fontSize: string;
+        fontSize: string;
     }
 
     // to allow this scenario you should first the following JSON definition to the capabilities.json file
@@ -59,23 +60,29 @@ module powerbi.extensibility.visual {
     ];
 
     export class Visual implements IVisual {
+        private host: IVisualHost;
+
         private rootElement: HTMLElement;
         private headNodes: Node[];
         private bodyNodes: Node[];
         private settings: VisualSettings;
-		private settings_rpivottable_params: VisualSettingsRPivotTableParams;
+        private settings_rpivottable_params: VisualSettingsRPivotTableParams;
 
+        private thePreviousSettingsInJson: string;
 
         public constructor(options: VisualConstructorOptions) {
             if (options && options.element) {
                 this.rootElement = options.element;
             }
+
+            this.host = options.host;
+
             this.headNodes = [];
             this.bodyNodes = [];
-			
-			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
+
+            this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
                 method: "Table",
-				fontSize: "12px"
+                fontSize: "12px"
             };
         }
 
@@ -91,17 +98,17 @@ module powerbi.extensibility.visual {
             }
             const dataView: DataView = options.dataViews[0];
             this.settings = Visual.parseSettings(dataView);
-			
-			this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
+
+            this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
                 method: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
-				fontSize: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
+                fontSize: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
             };
 
             let payloadBase64: string = null;
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                 payloadBase64 = dataView.scriptResult.payloadBase64;
             }
-			
+
             if (renderVisualUpdateType.indexOf(options.type) === -1) {
                 if (payloadBase64) {
                     this.injectCodeFromPayload(payloadBase64);
@@ -113,6 +120,26 @@ module powerbi.extensibility.visual {
 
         public onResizing(finalViewport: IViewport): void {
             /* add code to handle resizing of the view port */
+        }
+
+        private keepSettings(settings: string): void {
+            if (settings === this.thePreviousSettingsInJson) {
+                return;
+            }
+
+            this.thePreviousSettingsInJson = settings;
+
+            console.log(settings);
+
+            this.host.persistProperties({
+                merge: [{
+                    objectName: "internal_settings",
+                    properties: {
+                        settings
+                    },
+                    selector: null
+                }]
+            });
         }
 
         private injectCodeFromPayload(payloadBase64: string): void {
@@ -147,18 +174,18 @@ module powerbi.extensibility.visual {
                     this.headNodes = ParseElement(head, document.head);
                 }
             }
-			
-			// User-selected Format option styles
-			var css = document.createElement("style");
-			css.type = "text/css";
-			css.innerHTML = ".pvtVal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
-							".pvtAttr { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
-							".pvtTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
-							".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
-							".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
-							".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
-							".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " ;
-			document.body.appendChild(css);
+
+            // User-selected Format option styles
+            let css = document.createElement("style");
+            css.type = "text/css";
+            css.innerHTML = ".pvtVal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                ".pvtAttr { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                ".pvtTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                ".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
+                ".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+                ".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+                ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} ";
+            document.body.appendChild(css);
 
             // update 'body' nodes, under the rootElement
             while (this.bodyNodes.length > 0) {
@@ -170,37 +197,40 @@ module powerbi.extensibility.visual {
                 let body: HTMLBodyElement = bodyList[0];
                 this.bodyNodes = ParseElement(body, this.rootElement);
             }
-			
-            RunHTMLWidgetRenderer();
+
+            RunHTMLWidgetRenderer((config) => {
+                console.log(config);
+                this.keepSettings(JSON.stringify(config));
+            });
         }
 
         private static parseSettings(dataView: DataView): VisualSettings {
             return VisualSettings.parse(dataView) as VisualSettings;
         }
 
-        /** 
-         * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the 
+        /**
+         * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the
          * objects and properties you want to expose to the users in the property pane.
-         * 
+         *
          */
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
             // VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
             // return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
-			
-			let objectName = options.objectName;
-                let objectEnumeration = [];
 
-                switch (objectName) {
-                    case 'settings_rpivottable_params':
-                        objectEnumeration.push({
-                            objectName: objectName,
-                            properties: {
-                                method: this.settings_rpivottable_params.method,
-								fontSize: this.settings_rpivottable_params.fontSize
-                            },
-                            selector: null
-                        });
-                }
+            let objectName = options.objectName;
+            let objectEnumeration = [];
+
+            switch (objectName) {
+                case 'settings_rpivottable_params':
+                    objectEnumeration.push({
+                        objectName: objectName,
+                        properties: {
+                            method: this.settings_rpivottable_params.method,
+                            fontSize: this.settings_rpivottable_params.fontSize
+                        },
+                        selector: null
+                    });
+            }
 
             return objectEnumeration;
         }
