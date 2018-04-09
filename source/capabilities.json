@@ -1,46 +1,49 @@
 {
-  "dataRoles": [
-    {
-      "displayName": "Values",
-      "kind": "GroupingOrMeasure",
-      "name": "Values"
-    }
-  ],
-  "dataViewMappings": [
-    {
-      "scriptResult": {
-        "dataInput": {
-          "table": {
-            "rows": {
-              "select": [
-                {
-                  "for": {
-                    "in": "Values"
-                  }
-                }
-              ],
-              "dataReductionAlgorithm": {
-                "top": {}
+  "dataRoles": [{
+    "displayName": "Values",
+    "kind": "GroupingOrMeasure",
+    "name": "Values"
+  }],
+  "dataViewMappings": [{
+    "scriptResult": {
+      "dataInput": {
+        "table": {
+          "rows": {
+            "select": [{
+              "for": {
+                "in": "Values"
               }
+            }],
+            "dataReductionAlgorithm": {
+              "top": {}
             }
           }
+        }
+      },
+      "script": {
+        "scriptProviderDefault": "R",
+        "scriptOutputType": "html",
+        "source": {
+          "objectName": "rcv_script",
+          "propertyName": "source"
         },
-        "script": {
-          "scriptProviderDefault": "R",
-          "scriptOutputType": "html",
-          "source": {
-            "objectName": "rcv_script",
-            "propertyName": "source"
-          },
-          "provider": {
-            "objectName": "rcv_script",
-            "propertyName": "provider"
-          }
+        "provider": {
+          "objectName": "rcv_script",
+          "propertyName": "provider"
         }
       }
     }
-  ],
+  }],
   "objects": {
+    "internal_settings": {
+      "properties": {
+        "settings": {
+          "type": {
+            "text": true
+          }
+        }
+      }
+    },
     "rcv_script": {
       "properties": {
         "provider": {
@@ -65,8 +68,7 @@
           "displayName": "Default display",
           "description": "Control the default pivot display",
           "type": {
-            "enumeration": [
-              {
+            "enumeration": [{
                 "displayName": "Table",
                 "value": "Table"
               },
@@ -81,12 +83,11 @@
             ]
           }
         },
-		"fontSize": {
+        "fontSize": {
           "displayName": "Font size",
           "description": "Adjust the font size for rows, columns, values, and totals",
           "type": {
-            "enumeration": [
-              {
+            "enumeration": [{
                 "displayName": "10",
                 "value": "10px"
               },
@@ -113,8 +114,8 @@
             ]
           }
         }
-	  }
-	}
-},
+      }
+    }
+  },
   "suppressDefaultTitle": true
 }
