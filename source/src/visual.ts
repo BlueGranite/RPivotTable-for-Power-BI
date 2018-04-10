@@ -33,7 +33,6 @@ module powerbi.extensibility.visual {
     }*/
 
     interface VisualSettingsRPivotTableParams {
-        method: string;
         fontSize: string;
     }
 
@@ -81,7 +80,6 @@ module powerbi.extensibility.visual {
             this.bodyNodes = [];
 
             this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
-                method: "Table",
                 fontSize: "12px"
             };
         }
@@ -96,14 +94,18 @@ module powerbi.extensibility.visual {
                 !options.dataViews[0]) {
                 return;
             }
+			
+			// console.log(options);
+			
             const dataView: DataView = options.dataViews[0];
             this.settings = Visual.parseSettings(dataView);
 
             this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
-                method: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
                 fontSize: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
             };
-
+			
+			console.log(this.settings_rpivottable_params);
+			
             let payloadBase64: string = null;
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                 payloadBase64 = dataView.scriptResult.payloadBase64;
@@ -129,7 +131,7 @@ module powerbi.extensibility.visual {
 
             this.thePreviousSettingsInJson = settings;
 
-            console.log(settings);
+            // console.log(settings);
 
             this.host.persistProperties({
                 merge: [{
@@ -225,7 +227,6 @@ module powerbi.extensibility.visual {
                     objectEnumeration.push({
                         objectName: objectName,
                         properties: {
-                            method: this.settings_rpivottable_params.method,
                             fontSize: this.settings_rpivottable_params.fontSize
                         },
                         selector: null

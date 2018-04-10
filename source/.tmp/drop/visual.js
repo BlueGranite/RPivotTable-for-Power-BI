@@ -565,13 +565,30 @@ var powerbi;
                     script.innerHTML = refNode.innerHTML;
                     return script;
                 }
-                function RunHTMLWidgetRenderer() {
+                function RunHTMLWidgetRenderer(callback) {
                     // rendering HTML which was created by HTMLWidgets package
                     // wait till all tje script elements are loaded
                     var intervalVar = window.setInterval(function () {
                         if (injectorReady()) {
                             window.clearInterval(intervalVar);
                             if (window.hasOwnProperty("HTMLWidgets") && window["HTMLWidgets"].staticRender) {
+                                if (window["HTMLWidgets"].widgets
+                                    && window["HTMLWidgets"].widgets[0]
+                                    && window["HTMLWidgets"].widgets[0].renderValue) {
+                                    var originalRenderValue_1 = window["HTMLWidgets"].widgets[0].renderValue;
+                                    window["HTMLWidgets"].widgets[0].renderValue = function () {
+                                        var args = [];
+                                        for (var _i = 0; _i < arguments.length; _i++) {
+                                            args[_i] = arguments[_i];
+                                        }
+                                        args.forEach(function (arg) {
+                                            if (arg && arg.params) {
+                                                arg.params.onRefresh = [callback];
+                                            }
+                                        });
+                                        originalRenderValue_1.apply(void 0, args);
+                                    };
+                                }
                                 window["HTMLWidgets"].staticRender();
                             }
                         }
@@ -839,10 +856,10 @@ var powerbi;
                         if (options && options.element) {
                             this.rootElement = options.element;
                         }
+                        this.host = options.host;
                         this.headNodes = [];
                         this.bodyNodes = [];
                         this.settings_rpivottable_params = {
-                            method: "Table",
                             fontSize: "12px"
                         };
                     }
@@ -855,12 +872,13 @@ var powerbi;
                             !options.dataViews[0]) {
                             return;
                         }
+                        // console.log(options);
                         var dataView = options.dataViews[0];
                         this.settings = Visual.parseSettings(dataView);
                         this.settings_rpivottable_params = {
-                            method: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'method', "Table"),
                             fontSize: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
                         };
+                        console.log(this.settings_rpivottable_params);
                         var payloadBase64 = null;
                         if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                             payloadBase64 = dataView.scriptResult.payloadBase64;
@@ -877,10 +895,27 @@ var powerbi;
                     Visual.prototype.onResizing = function (finalViewport) {
                         /* add code to handle resizing of the view port */
                     };
+                    Visual.prototype.keepSettings = function (settings) {
+                        if (settings === this.thePreviousSettingsInJson) {
+                            return;
+                        }
+                        this.thePreviousSettingsInJson = settings;
+                        // console.log(settings);
+                        this.host.persistProperties({
+                            merge: [{
+                                    objectName: "internal_settings",
+                                    properties: {
+                                        settings: settings
+                                    },
+                                    selector: null
+                                }]
+                        });
+                    };
                     Visual.prototype.injectCodeFromPayload = function (payloadBase64) {
                         // inject HTML from payload, created in R
                         // the code is injected to the 'head' and 'body' sections.
                         // if the visual was already rendered, the previous DOM elements are cleared
+                        var _this = this;
                         rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.ResetInjector();
                         if (!payloadBase64) {
                             return;
@@ -927,7 +962,10 @@ var powerbi;
                             var body = bodyList[0];
                             this.bodyNodes = rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.ParseElement(body, this.rootElement);
                         }
-                        rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.RunHTMLWidgetRenderer();
+                        rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.RunHTMLWidgetRenderer(function (config) {
+                            console.log(config);
+                            _this.keepSettings(JSON.stringify(config));
+                        });
                     };
                     Visual.parseSettings = function (dataView) {
                         return rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.VisualSettings.parse(dataView);
@@ -947,7 +985,6 @@ var powerbi;
                                 objectEnumeration.push({
                                     objectName: objectName,
                                     properties: {
-                                        method: this.settings_rpivottable_params.method,
                                         fontSize: this.settings_rpivottable_params.fontSize
                                     },
                                     selector: null
@@ -968,11 +1005,11 @@ var powerbi;
     (function (visuals) {
         var plugins;
         (function (plugins) {
-            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F = {
-                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
+            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG = {
+                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG',
                 displayName: 'R Pivot Table',
                 class: 'Visual',
-                version: '1.0.1.6',
+                version: '1.0.2.1',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true
