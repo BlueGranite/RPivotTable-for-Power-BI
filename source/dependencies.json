@@ -20,6 +20,11 @@
       "displayName": "XML",
       "url": "https://cran.r-project.org/web/packages/XML/index.html"
     },
+	{
+      "name": "jsonlite",
+      "displayName": "jsonlite",
+      "url": "https://cran.r-project.org/web/packages/jsonlite/index.html"
+    },
     {
       "name": "rpivotTable",
       "displayName": "rpivotTable",

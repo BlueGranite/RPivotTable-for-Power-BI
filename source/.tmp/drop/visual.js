@@ -1005,8 +1005,8 @@ var powerbi;
     (function (visuals) {
         var plugins;
         (function (plugins) {
-            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG = {
-                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F_DEBUG',
+            plugins.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F = {
+                name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
                 displayName: 'R Pivot Table',
                 class: 'Visual',
                 version: '1.0.2.1',
