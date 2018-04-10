@@ -44,13 +44,30 @@ module powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F 
     return script;
   }
 
-  export function RunHTMLWidgetRenderer(): void {
+  export function RunHTMLWidgetRenderer(callback): void {
     // rendering HTML which was created by HTMLWidgets package
     // wait till all tje script elements are loaded
     let intervalVar: number = window.setInterval(() => {
       if (injectorReady()) {
         window.clearInterval(intervalVar);
         if (window.hasOwnProperty("HTMLWidgets") && window["HTMLWidgets"].staticRender) {
+          if (window["HTMLWidgets"].widgets
+            && window["HTMLWidgets"].widgets[0]
+            && window["HTMLWidgets"].widgets[0].renderValue
+          ) {
+            const originalRenderValue = window["HTMLWidgets"].widgets[0].renderValue;
+
+            window["HTMLWidgets"].widgets[0].renderValue = (...args) => {
+              args.forEach((arg) => {
+                if (arg && arg.params) {
+                  arg.params.onRefresh = [callback];
+                }
+              });
+
+              originalRenderValue(...args);
+            };
+          }
+
           window["HTMLWidgets"].staticRender();
         }
       }
