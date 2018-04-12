@@ -15,6 +15,11 @@ initial_column <- colnames(Values)[2];
 initial_row_order <- "key_a_to_z";
 initial_col_order <- "key_a_to_z";
 
+if (!exists("settings_rpivottable_params_limitDecimalPlaces"))
+{
+    settings_rpivottable_params_limitDecimalPlaces = 2;
+}
+
 if (exists("internal_settings_settings"))
 {
 	user_persisted_settings <- fromJSON(internal_settings_settings);
@@ -28,6 +33,11 @@ if (exists("internal_settings_settings"))
 	initial_col_order <- user_persisted_settings$colOrder;
 }
 
+# set decimal places since we currently cannot get formatting for R visuals
+idx <- sapply(Values, class)=="numeric"
+Values[, idx] <- lapply(Values[, idx], formatC, digits = as.numeric(settings_rpivottable_params_limitDecimalPlaces), format = "f")
+
+# build pivot table
 p <- rpivotTable(Values, 
 		rows = initial_row, 
 		cols = initial_column,
@@ -40,6 +50,7 @@ p <- rpivotTable(Values,
 		height = "95vh"
 	);
 
+# adjust padding to use entire container
 p$sizingPolicy$browser$padding = 0
 
 ####################################################

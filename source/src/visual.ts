@@ -34,6 +34,7 @@ module powerbi.extensibility.visual {
 
     interface VisualSettingsRPivotTableParams {
         fontSize: string;
+		limitDecimalPlaces: string;
     }
 
     // to allow this scenario you should first the following JSON definition to the capabilities.json file
@@ -80,7 +81,8 @@ module powerbi.extensibility.visual {
             this.bodyNodes = [];
 
             this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
-                fontSize: "12px"
+                fontSize: "12px",
+				limitDecimalPlaces: "2"
             };
         }
 
@@ -102,7 +104,8 @@ module powerbi.extensibility.visual {
 
             this.settings_rpivottable_params = <VisualSettingsRPivotTableParams>{
                 fontSize: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
-            };
+                limitDecimalPlaces: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'limitDecimalPlaces', "2")
+			};
 			
 			console.log(this.settings_rpivottable_params);
 			
@@ -227,7 +230,8 @@ module powerbi.extensibility.visual {
                     objectEnumeration.push({
                         objectName: objectName,
                         properties: {
-                            fontSize: this.settings_rpivottable_params.fontSize
+                            fontSize: this.settings_rpivottable_params.fontSize,
+							limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
                         },
                         selector: null
                     });

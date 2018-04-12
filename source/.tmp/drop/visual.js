@@ -860,7 +860,8 @@ var powerbi;
                         this.headNodes = [];
                         this.bodyNodes = [];
                         this.settings_rpivottable_params = {
-                            fontSize: "12px"
+                            fontSize: "12px",
+                            limitDecimalPlaces: "2"
                         };
                     }
                     Visual.prototype.update = function (options) {
@@ -877,6 +878,7 @@ var powerbi;
                         this.settings = Visual.parseSettings(dataView);
                         this.settings_rpivottable_params = {
                             fontSize: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
+                            limitDecimalPlaces: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'limitDecimalPlaces', "2")
                         };
                         console.log(this.settings_rpivottable_params);
                         var payloadBase64 = null;
@@ -985,7 +987,8 @@ var powerbi;
                                 objectEnumeration.push({
                                     objectName: objectName,
                                     properties: {
-                                        fontSize: this.settings_rpivottable_params.fontSize
+                                        fontSize: this.settings_rpivottable_params.fontSize,
+                                        limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
                                     },
                                     selector: null
                                 });
@@ -1009,7 +1012,7 @@ var powerbi;
                 name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
                 displayName: 'R Pivot Table',
                 class: 'Visual',
-                version: '1.0.2.2',
+                version: '1.0.2.3',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true
