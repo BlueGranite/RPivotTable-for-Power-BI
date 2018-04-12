@@ -37,8 +37,11 @@ p <- rpivotTable(Values,
 		rowOrder = initial_row_order,
 		colOrder = initial_col_order,
 		width = "100%", 
-		height = "75vh"
+		height = "95vh"
 	);
+
+p$sizingPolicy$browser$padding = 0
+
 ####################################################
 
 ############# Create and save widget ###############
