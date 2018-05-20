@@ -34,8 +34,8 @@ if (exists("internal_settings_settings"))
 }
 
 # set decimal places since we currently cannot get formatting for R visuals
-idx <- sapply(Values, class)=="numeric"
-Values[, idx] <- lapply(Values[, idx], formatC, digits = as.numeric(settings_rpivottable_params_limitDecimalPlaces), format = "f")
+#idx <- sapply(Values, class)=="numeric"
+#Values[, idx] <- lapply(Values[, idx], formatC, digits = as.numeric(settings_rpivottable_params_limitDecimalPlaces), format = "f")
 
 # build pivot table
 p <- rpivotTable(Values, 

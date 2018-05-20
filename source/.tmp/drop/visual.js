@@ -863,6 +863,8 @@ var powerbi;
                             fontSize: "12px",
                             limitDecimalPlaces: "2"
                         };
+                        this.updateCount = 0;
+                        this.settingsCheck = "";
                     }
                     Visual.prototype.update = function (options) {
                         if (!options ||
@@ -880,10 +882,28 @@ var powerbi;
                             fontSize: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'fontSize', "12px"),
                             limitDecimalPlaces: rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.getValue(dataView.metadata.objects, 'settings_rpivottable_params', 'limitDecimalPlaces', "2")
                         };
-                        console.log(this.settings_rpivottable_params);
+                        // console.log(this.settings_rpivottable_params);
+                        // console.log(this.fontSizeCheck);
+                        // console.log(this.settings_rpivottable_params.fontSize);
+                        //let internalSettings = dataView.metadata.objects.internal_settings;
                         var payloadBase64 = null;
                         if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
                             payloadBase64 = dataView.scriptResult.payloadBase64;
+                            var payloadCheck = dataView.scriptResult.payloadBase64;
+                        }
+                        var a1 = JSON.stringify(this.settingsCheck);
+                        var b1 = JSON.stringify(dataView.metadata.objects.internal_settings);
+                        var settingsNotEqual = true;
+                        if (a1 == b1) {
+                            // console.log("settings equal");
+                            settingsNotEqual = false;
+                        }
+                        // only refresh the entire visual if a format option changes, not an in-visual field move
+                        if (options.type == 2 && this.updateCount !== 0 && settingsNotEqual === true) {
+                            // console.log(this.settingsCheck);
+                            // console.log(dataView.metadata.objects.internal_settings);
+                            this.settingsCheck = dataView.metadata.objects.internal_settings;
+                            return;
                         }
                         if (renderVisualUpdateType.indexOf(options.type) === -1) {
                             if (payloadBase64) {
@@ -893,6 +913,9 @@ var powerbi;
                         else {
                             this.onResizing(options.viewport);
                         }
+                        // update counter and format option change check
+                        this.updateCount++;
+                        this.settingsCheck = dataView.metadata.objects.internal_settings;
                     };
                     Visual.prototype.onResizing = function (finalViewport) {
                         /* add code to handle resizing of the view port */
@@ -952,7 +975,9 @@ var powerbi;
                             ".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
                             ".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
                             ".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
-                            ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} ";
+                            ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+                            // Cannot save state of in-visual filters, and no built-in R package option to disable, so manually hiding
+                            ".pvtTriangle { visibility: hidden; }";
                         document.body.appendChild(css);
                         // update 'body' nodes, under the rootElement
                         while (this.bodyNodes.length > 0) {
@@ -965,7 +990,7 @@ var powerbi;
                             this.bodyNodes = rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.ParseElement(body, this.rootElement);
                         }
                         rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.RunHTMLWidgetRenderer(function (config) {
-                            console.log(config);
+                            // console.log(config);
                             _this.keepSettings(JSON.stringify(config));
                         });
                     };
@@ -987,8 +1012,8 @@ var powerbi;
                                 objectEnumeration.push({
                                     objectName: objectName,
                                     properties: {
-                                        fontSize: this.settings_rpivottable_params.fontSize,
-                                        limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
+                                        fontSize: this.settings_rpivottable_params.fontSize
+                                        // limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
                                     },
                                     selector: null
                                 });
@@ -1012,7 +1037,7 @@ var powerbi;
                 name: 'rPivotTable8B3D024D64314B469FFC4852A7ACBD5F',
                 displayName: 'R Pivot Table',
                 class: 'Visual',
-                version: '1.0.2.3',
+                version: '1.0.2.5',
                 apiVersion: '1.10.0',
                 create: function (options) { return new powerbi.extensibility.visual.rPivotTable8B3D024D64314B469FFC4852A7ACBD5F.Visual(options); },
                 custom: true

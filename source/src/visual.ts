@@ -69,6 +69,8 @@ module powerbi.extensibility.visual {
         private settings_rpivottable_params: VisualSettingsRPivotTableParams;
 
         private thePreviousSettingsInJson: string;
+		private updateCount: number;
+		private settingsCheck: any;
 
         public constructor(options: VisualConstructorOptions) {
             if (options && options.element) {
@@ -84,6 +86,9 @@ module powerbi.extensibility.visual {
                 fontSize: "12px",
 				limitDecimalPlaces: "2"
             };
+			
+			this.updateCount = 0;
+			this.settingsCheck = "";
         }
 
         public update(options: VisualUpdateOptions): void {
@@ -98,7 +103,7 @@ module powerbi.extensibility.visual {
             }
 			
 			// console.log(options);
-			
+			 
             const dataView: DataView = options.dataViews[0];
             this.settings = Visual.parseSettings(dataView);
 
@@ -107,20 +112,47 @@ module powerbi.extensibility.visual {
                 limitDecimalPlaces: getValue<string>(dataView.metadata.objects, 'settings_rpivottable_params', 'limitDecimalPlaces', "2")
 			};
 			
-			console.log(this.settings_rpivottable_params);
+			// console.log(this.settings_rpivottable_params);
+			// console.log(this.fontSizeCheck);
+			// console.log(this.settings_rpivottable_params.fontSize);
+			
+			//let internalSettings = dataView.metadata.objects.internal_settings;
 			
             let payloadBase64: string = null;
-            if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
-                payloadBase64 = dataView.scriptResult.payloadBase64;
-            }
-
+            
+			if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
+				payloadBase64 = dataView.scriptResult.payloadBase64;
+				let payloadCheck = dataView.scriptResult.payloadBase64;
+            } 
+			
+			let a1 = JSON.stringify(this.settingsCheck);
+			let b1 = JSON.stringify(dataView.metadata.objects.internal_settings);
+			let settingsNotEqual = true;
+			if (a1 == b1) {
+				// console.log("settings equal");
+				settingsNotEqual = false;
+			}
+			
+			// only refresh the entire visual if a format option changes, not an in-visual field move
+			if(options.type == 2 && this.updateCount !==0 && settingsNotEqual === true) { 
+				// console.log(this.settingsCheck);
+				// console.log(dataView.metadata.objects.internal_settings);
+				this.settingsCheck = dataView.metadata.objects.internal_settings;
+				return;
+			}
+			
             if (renderVisualUpdateType.indexOf(options.type) === -1) {
                 if (payloadBase64) {
                     this.injectCodeFromPayload(payloadBase64);
                 }
             } else {
-                this.onResizing(options.viewport);
+				this.onResizing(options.viewport);
             }
+			
+			// update counter and format option change check
+			this.updateCount++;
+			this.settingsCheck = dataView.metadata.objects.internal_settings;
+		
         }
 
         public onResizing(finalViewport: IViewport): void {
@@ -144,7 +176,7 @@ module powerbi.extensibility.visual {
                     },
                     selector: null
                 }]
-            });
+            });					
         }
 
         private injectCodeFromPayload(payloadBase64: string): void {
@@ -189,9 +221,11 @@ module powerbi.extensibility.visual {
                 ".pvtGrandTotal { font-size: " + this.settings_rpivottable_params.fontSize + ";} " +
                 ".pvtAxisLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
                 ".pvtRowLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
-                ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} ";
+                ".pvtColLabel { font-size: " + this.settings_rpivottable_params.fontSize + " !important;} " +
+				// Cannot save state of in-visual filters, and no built-in R package option to disable, so manually hiding
+				".pvtTriangle { visibility: hidden; }";
             document.body.appendChild(css);
-
+			
             // update 'body' nodes, under the rootElement
             while (this.bodyNodes.length > 0) {
                 let tempNode: Node = this.bodyNodes.pop();
@@ -204,7 +238,7 @@ module powerbi.extensibility.visual {
             }
 
             RunHTMLWidgetRenderer((config) => {
-                console.log(config);
+                // console.log(config);
                 this.keepSettings(JSON.stringify(config));
             });
         }
@@ -230,8 +264,8 @@ module powerbi.extensibility.visual {
                     objectEnumeration.push({
                         objectName: objectName,
                         properties: {
-                            fontSize: this.settings_rpivottable_params.fontSize,
-							limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
+                            fontSize: this.settings_rpivottable_params.fontSize
+							// limitDecimalPlaces: this.settings_rpivottable_params.limitDecimalPlaces
                         },
                         selector: null
                     });
